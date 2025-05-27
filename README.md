@@ -49,13 +49,31 @@ After that first account, account creation is disabled by default.
 
 If you want to allow more accounts, you'll have to configure the server (see "Configuration" below).
 
-### Docker
+## Docker
 
-There is an unofficial [Docker image available](https://github.com/ganeshlab/opodsync). Please report any Docker issue there.
+A Docker image for oPodSync is automatically built and pushed to the GitHub Container Registry (GHCR) on every push to the `main` branch.
 
-If this image stops being maintained, see [Docker Hub](https://hub.docker.com/search?q=opodsync) to find other community distribution for Docker.
+**Image Location:** `ghcr.io/${{ github.repository }}:latest` (or replace `${{ github.repository }}` with the actual repository name, e.g., `ghcr.io/kd2org/opodsync:latest`)
 
-**Please don't report Docker issues here, this repository is only for software development.**
+### Running the container
+
+To run the container, you need to map a volume for persistent data storage. The application stores its SQLite database and other data in `/var/www/html/data` inside the container.
+
+Example:
+
+```bash
+# Create a local directory for persistent data
+mkdir my-opodsync-data
+
+# Run the container
+docker run -d -p 8080:80 \
+    -v $(pwd)/my-opodsync-data:/var/www/html/data \
+    ghcr.io/kd2org/opodsync:latest
+```
+
+Then, access the application at `http://localhost:8080`.
+
+This Docker image and the accompanying GitHub Actions workflow are designed to be repository-agnostic. If you fork this project, the Action will build and push the image to your fork's GHCR automatically without requiring any changes to the workflow files.
 
 ### Configuration
 
